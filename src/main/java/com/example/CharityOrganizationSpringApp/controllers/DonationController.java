@@ -35,10 +35,9 @@ public class DonationController {
     private final UsersService usersService;
     private final EventService eventService;
 
-
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<HttpStatus> becomeParticipant(@RequestBody @Valid DonationDTO donationDTO,
+    public void becomeParticipant(@RequestBody @Valid DonationDTO donationDTO,
                                                         BindingResult bindingResult) {
         Donation donation = convertToDonation(donationDTO);
 
@@ -46,7 +45,6 @@ public class DonationController {
             returnErrorsToClient(bindingResult);
 
         donationService.save(donation);
-        return ResponseEntity.ok(HttpStatus.OK);
     }
 
     private Donation convertToDonation(DonationDTO donationDTO) {

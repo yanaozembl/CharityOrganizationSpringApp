@@ -2,6 +2,7 @@ package com.example.CharityOrganizationSpringApp.controllers;
 
 import com.example.CharityOrganizationSpringApp.dto.RegistrationDTO;
 import com.example.CharityOrganizationSpringApp.dto.AuthenticationDTO;
+import com.example.CharityOrganizationSpringApp.dto.TokenDTO;
 import com.example.CharityOrganizationSpringApp.models.User;
 import com.example.CharityOrganizationSpringApp.security.JWTUtil;
 import com.example.CharityOrganizationSpringApp.services.RegistrationService;
@@ -31,38 +32,37 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
 
     @PostMapping("/registration")
-    public Map<String, String> performRegistration(@RequestBody @Valid RegistrationDTO registrationDTO,
+    public TokenDTO performRegistration(@RequestBody @Valid RegistrationDTO registrationDTO,
                                                           BindingResult bindingResult) {
         User user = convertToUser(registrationDTO);
 
         if (bindingResult.hasErrors()) {
-            return Map.of("message", "Error!");
+            return new TokenDTO(Map.of("message", "Error!"));
         }
         registrationService.register(user);
 
         String token = jwtUtil.generateToken(user.getEmail());
-        return Map.of("jwt-token", token); // sent token to client
+        return new TokenDTO(Map.of("jwt-token", token)); // sent token to client
     }
 
     @PostMapping("/login")
-    public Map<String, String> performLogin(@RequestBody AuthenticationDTO authenticationDTO) {
+    public TokenDTO performLogin(@RequestBody AuthenticationDTO authenticationDTO) {
         UsernamePasswordAuthenticationToken authInputToken =  // standard class for encapsulation login and password
                 new UsernamePasswordAuthenticationToken(authenticationDTO.getEmail(),
                         authenticationDTO.getPassword());
 
-        // check whether credentials are correct
         try {
             authenticationManager.authenticate(authInputToken);
         } catch (BadCredentialsException e) {
-            return Map.of("message", "Incorrect credentials!");
+            return new TokenDTO(Map.of("message", "Incorrect credentials!"));
         }
 
         String token = jwtUtil.generateToken(authenticationDTO.getEmail());
-        return Map.of("jwt-token", token);
+        return new TokenDTO(Map.of("jwt-token", token));
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logoutUser() {
+    public ResponseEntity logoutUser() {
         return ResponseEntity.ok("Successfully logged out");
     }
 

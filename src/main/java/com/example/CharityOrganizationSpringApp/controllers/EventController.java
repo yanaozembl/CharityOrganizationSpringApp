@@ -4,6 +4,7 @@ import com.example.CharityOrganizationSpringApp.dto.EventDTO;
 import com.example.CharityOrganizationSpringApp.dto.responses.EventsResponse;
 import com.example.CharityOrganizationSpringApp.models.Donation;
 import com.example.CharityOrganizationSpringApp.models.Event;
+import com.example.CharityOrganizationSpringApp.models.Participant;
 import com.example.CharityOrganizationSpringApp.services.EventService;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
@@ -59,7 +60,11 @@ public class EventController {
     @GetMapping("/{id}/participantsCount")
     public Integer getParticipantsCount(@PathVariable("id") int id) {
         Event event = eventService.findById(id);
-        return event.getParticipants().size();
+
+        return event.getParticipants().stream()
+                .filter(Participant::getParticipated)
+                .toList()
+                .size();
     }
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
@@ -77,7 +82,7 @@ public class EventController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<HttpStatus> create(@RequestBody @Valid EventDTO eventDTO,
+    public void create(@RequestBody @Valid EventDTO eventDTO,
                                              BindingResult bindingResult) {
         Event event = convertToEvent(eventDTO);
 
@@ -85,25 +90,21 @@ public class EventController {
             returnErrorsToClient(bindingResult);
 
         eventService.save(event);
-        return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{id}/edit")
-    public ResponseEntity<HttpStatus> update(@PathVariable("id") int id,
+    public void update(@PathVariable("id") int id,
                                              @RequestBody @Valid EventDTO eventDTO){
         Event event = convertToEvent(eventDTO);
 
         eventService.update(id, event);
-
-        return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}/delete")
-    public ResponseEntity<HttpStatus> delete(@PathVariable("id") int id){
+    public void delete(@PathVariable("id") int id){
         eventService.delete(id);
-        return ResponseEntity.ok(HttpStatus.OK);
     }
 
     private Event convertToEvent(EventDTO eventDTO) {
