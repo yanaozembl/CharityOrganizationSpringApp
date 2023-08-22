@@ -5,6 +5,7 @@ import com.example.CharityOrganizationSpringApp.models.Donation;
 import com.example.CharityOrganizationSpringApp.services.DonationService;
 import com.example.CharityOrganizationSpringApp.services.EventService;
 import com.example.CharityOrganizationSpringApp.services.UsersService;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +27,7 @@ import static com.example.CharityOrganizationSpringApp.util.ErrorsUtil.returnErr
 
 @RestController
 @RequestMapping("/donations")
+@RequiredArgsConstructor
 public class DonationController {
 
     private final DonationService donationService;
@@ -33,13 +35,6 @@ public class DonationController {
     private final UsersService usersService;
     private final EventService eventService;
 
-    public DonationController(DonationService donationService, ModelMapper modelMapper,
-                              UsersService usersService, EventService eventService) {
-        this.donationService = donationService;
-        this.modelMapper = modelMapper;
-        this.usersService = usersService;
-        this.eventService = eventService;
-    }
 
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @PostMapping

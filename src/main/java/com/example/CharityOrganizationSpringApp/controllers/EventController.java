@@ -5,6 +5,7 @@ import com.example.CharityOrganizationSpringApp.dto.responses.EventsResponse;
 import com.example.CharityOrganizationSpringApp.models.Donation;
 import com.example.CharityOrganizationSpringApp.models.Event;
 import com.example.CharityOrganizationSpringApp.services.EventService;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,16 +29,12 @@ import static com.example.CharityOrganizationSpringApp.util.ErrorsUtil.returnErr
 
 @RestController
 @RequestMapping("/events")
+@RequiredArgsConstructor
 public class EventController {
 
     private final EventService eventService;
     private final ModelMapper modelMapper;
 
-    @Autowired
-    public EventController(EventService eventService, ModelMapper modelMapper) {
-        this.eventService = eventService;
-        this.modelMapper = modelMapper;
-    }
 
     @GetMapping()
     public EventsResponse getAllEvents(@RequestParam("date") Optional<String> dateString) {

@@ -1,5 +1,10 @@
 package com.example.CharityOrganizationSpringApp.models;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -11,6 +16,9 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "Donations")
+@Setter
+@Getter
+@NoArgsConstructor
 public class Donation {
 
     @Id
@@ -34,52 +42,10 @@ public class Donation {
     @JoinColumn(name = "client_id", referencedColumnName = "id")
     private User client;
 
-    public Donation() {}
-
-    public Donation(BigDecimal amount, LocalDate date/*, Event event, User client*/) {
+    public Donation(BigDecimal amount, LocalDate date, Event event, User client) {
         this.amount = amount;
         this.date = date;
-//        this.event = event;
-//        this.client = client;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public BigDecimal getAmount() {
-        return amount;
-    }
-
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
-    public Event getEvent() {
-        return event;
-    }
-
-    public void setEvent(Event event) {
         this.event = event;
-    }
-
-    public User getClient() {
-        return client;
-    }
-
-    public void setClient(User client) {
         this.client = client;
     }
 }

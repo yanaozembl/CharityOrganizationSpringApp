@@ -1,6 +1,7 @@
 package com.example.CharityOrganizationSpringApp.config;
 
 import com.example.CharityOrganizationSpringApp.services.UsersDetailsService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,17 +19,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
     private final UsersDetailsService usersDetailsService;
     private final JWTFilter jwtFilter;
-
-    @Autowired
-    public SecurityConfig(UsersDetailsService usersDetailsService, JWTFilter jwtFilter) {
-        this.usersDetailsService = usersDetailsService;
-        this.jwtFilter = jwtFilter;
-    }
 
     // аутентификация
     protected void registerProvider(AuthenticationManagerBuilder auth) throws Exception {

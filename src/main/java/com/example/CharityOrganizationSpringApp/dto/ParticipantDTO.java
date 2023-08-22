@@ -1,8 +1,14 @@
 package com.example.CharityOrganizationSpringApp.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+@Setter
+@Getter
 public class ParticipantDTO {
 
     @NotNull
@@ -13,28 +19,4 @@ public class ParticipantDTO {
 
     @NotNull
     private Boolean participated;
-
-    public Boolean getParticipated() {
-        return participated;
-    }
-
-    public void setParticipated(Boolean participated) {
-        this.participated = participated;
-    }
-
-    public Integer getEventIdentifier() {
-        return eventIdentifier;
-    }
-
-    public void setEventIdentifier(Integer eventIdentifier) {
-        this.eventIdentifier = eventIdentifier;
-    }
-
-    public Integer getClientIdentifier() {
-        return clientIdentifier;
-    }
-
-    public void setClientIdentifier(Integer clientIdentifier) {
-        this.clientIdentifier = clientIdentifier;
-    }
 }

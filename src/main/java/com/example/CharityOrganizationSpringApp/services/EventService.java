@@ -3,6 +3,7 @@ package com.example.CharityOrganizationSpringApp.services;
 import com.example.CharityOrganizationSpringApp.models.Event;
 import com.example.CharityOrganizationSpringApp.repositories.EventsRepository;
 import com.example.CharityOrganizationSpringApp.util.ObjectNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,16 +16,11 @@ import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class EventService {
 
     private final EventsRepository eventsRepository;
     private final UsersService usersService;
-
-    @Autowired
-    public EventService(EventsRepository eventsRepository, UsersService usersService) {
-        this.eventsRepository = eventsRepository;
-        this.usersService = usersService;
-    }
 
     public List<Event> findAll() {
         return eventsRepository.findAll();
@@ -58,6 +54,7 @@ public class EventService {
     public List<Event> findByDate(LocalDate searchDate) {
         return eventsRepository.findByDate(searchDate);
     }
+
     private void enrichEvent(Event event) {
         String organizerEmail = event.getOrganizer().getEmail();
         event.setOrganizer(usersService.findByEmail(organizerEmail)

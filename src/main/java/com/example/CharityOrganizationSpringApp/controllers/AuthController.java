@@ -1,15 +1,12 @@
 package com.example.CharityOrganizationSpringApp.controllers;
 
 import com.example.CharityOrganizationSpringApp.dto.RegistrationDTO;
-import com.example.CharityOrganizationSpringApp.dto.UserDTO;
 import com.example.CharityOrganizationSpringApp.dto.AuthenticationDTO;
 import com.example.CharityOrganizationSpringApp.models.User;
 import com.example.CharityOrganizationSpringApp.security.JWTUtil;
 import com.example.CharityOrganizationSpringApp.services.RegistrationService;
-import com.example.CharityOrganizationSpringApp.util.UserValidator;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -25,33 +22,18 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
+@RequiredArgsConstructor
 public class AuthController {
 
-    private final UserValidator userValidator;
     private final RegistrationService registrationService;
     private final JWTUtil jwtUtil;
     private final ModelMapper modelMapper;
     private final AuthenticationManager authenticationManager;
 
-    @Autowired
-    public AuthController(UserValidator userValidator,
-                          RegistrationService registrationService,
-                          JWTUtil jwtUtil,
-                          ModelMapper modelMapper,
-                          AuthenticationManager authenticationManager) {
-        this.userValidator = userValidator;
-        this.registrationService = registrationService;
-        this.jwtUtil = jwtUtil;
-        this.modelMapper = modelMapper;
-        this.authenticationManager = authenticationManager;
-    }
-
     @PostMapping("/registration")
     public Map<String, String> performRegistration(@RequestBody @Valid RegistrationDTO registrationDTO,
                                                           BindingResult bindingResult) {
         User user = convertToUser(registrationDTO);
-
-        userValidator.validate(user, bindingResult);
 
         if (bindingResult.hasErrors()) {
             return Map.of("message", "Error!");

@@ -7,6 +7,7 @@ import com.example.CharityOrganizationSpringApp.models.User;
 import com.example.CharityOrganizationSpringApp.services.EventService;
 import com.example.CharityOrganizationSpringApp.services.ParticipantService;
 import com.example.CharityOrganizationSpringApp.services.UsersService;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,22 +25,13 @@ import static com.example.CharityOrganizationSpringApp.util.ErrorsUtil.returnErr
 
 @RestController
 @RequestMapping("/participants")
+@RequiredArgsConstructor
 public class ParticipantController {
 
     private final ModelMapper modelMapper;
     private final ParticipantService participantService;
     private final UsersService usersService;
     private final EventService eventService;
-
-    @Autowired
-    public ParticipantController(ModelMapper modelMapper, ParticipantService participantService,
-                                 UsersService usersService,
-                                 EventService eventService) {
-        this.modelMapper = modelMapper;
-        this.participantService = participantService;
-        this.usersService = usersService;
-        this.eventService = eventService;
-    }
 
     @PreAuthorize("hasRole('USER')")
     @PostMapping
