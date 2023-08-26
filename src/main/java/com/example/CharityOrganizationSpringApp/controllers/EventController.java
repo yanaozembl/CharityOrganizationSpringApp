@@ -6,6 +6,8 @@ import com.example.CharityOrganizationSpringApp.models.Donation;
 import com.example.CharityOrganizationSpringApp.models.Event;
 import com.example.CharityOrganizationSpringApp.models.Participant;
 import com.example.CharityOrganizationSpringApp.services.EventService;
+import com.example.CharityOrganizationSpringApp.util.ErrorResponse;
+import com.example.CharityOrganizationSpringApp.util.ObjectNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
 import org.modelmapper.ModelMapper;
@@ -36,7 +38,6 @@ public class EventController {
     private final EventService eventService;
     private final ModelMapper modelMapper;
 
-
     @GetMapping()
     public EventsResponse getAllEvents(@RequestParam("date") Optional<String> dateString) {
         List<Event> events;
@@ -58,13 +59,12 @@ public class EventController {
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     @GetMapping("/{id}/participantsCount")
-    public Integer getParticipantsCount(@PathVariable("id") int id) {
+    public Long getParticipantsCount(@PathVariable("id") int id) {
         Event event = eventService.findById(id);
 
         return event.getParticipants().stream()
                 .filter(Participant::getParticipated)
-                .toList()
-                .size();
+                .count();
     }
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
@@ -105,6 +105,16 @@ public class EventController {
     @DeleteMapping("/{id}/delete")
     public void delete(@PathVariable("id") int id){
         eventService.delete(id);
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<ErrorResponse> handleException(ObjectNotFoundException e) {
+        ErrorResponse response = new ErrorResponse(
+                e.getMessage(),
+                System.currentTimeMillis()
+        );
+
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
     private Event convertToEvent(EventDTO eventDTO) {

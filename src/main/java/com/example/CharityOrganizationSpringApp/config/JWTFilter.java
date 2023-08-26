@@ -3,6 +3,7 @@ package com.example.CharityOrganizationSpringApp.config;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.example.CharityOrganizationSpringApp.security.JWTUtil;
 import com.example.CharityOrganizationSpringApp.services.UsersDetailsService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,19 +16,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-// catches requests
 @Component
+@RequiredArgsConstructor
 public class JWTFilter extends OncePerRequestFilter {
 
     private final JWTUtil jwtUtil;
     private final UsersDetailsService usersDetailsService;
 
-    public JWTFilter(JWTUtil jwtUtil, UsersDetailsService usersDetailsService) {
-        this.jwtUtil = jwtUtil;
-        this.usersDetailsService = usersDetailsService;
-    }
-
-    // get access to http request
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authHeader = request.getHeader("Authorization");

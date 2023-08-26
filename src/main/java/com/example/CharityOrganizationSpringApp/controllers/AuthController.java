@@ -6,17 +6,17 @@ import com.example.CharityOrganizationSpringApp.dto.TokenDTO;
 import com.example.CharityOrganizationSpringApp.models.User;
 import com.example.CharityOrganizationSpringApp.security.JWTUtil;
 import com.example.CharityOrganizationSpringApp.services.RegistrationService;
+import com.example.CharityOrganizationSpringApp.util.ErrorResponse;
+import com.example.CharityOrganizationSpringApp.util.ObjectIsAlreadyUsedException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Map;
@@ -64,6 +64,16 @@ public class AuthController {
     @PostMapping("/logout")
     public ResponseEntity logoutUser() {
         return ResponseEntity.ok("Successfully logged out");
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<ErrorResponse> handleException(ObjectIsAlreadyUsedException e) {
+        ErrorResponse response = new ErrorResponse(
+                e.getMessage(),
+                System.currentTimeMillis()
+        );
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     public User convertToUser(RegistrationDTO registrationDTO) {
